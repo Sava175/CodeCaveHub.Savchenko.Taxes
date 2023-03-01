@@ -20,12 +20,15 @@ public class Employee {
     @EqualsAndHashCode.Exclude
     @OneToOne
     private Person person;
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
+
     @OneToOne
     private User user;
     @Enumerated(EnumType.STRING)
     private Position position;
+    @OneToMany
+    private List<Report>reports;
+    @OneToMany
+    private Set<Request> requests;
     @Column(nullable = false)
     private LocalDateTime created;
     @Column(nullable = false)

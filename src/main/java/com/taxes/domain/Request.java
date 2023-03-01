@@ -1,9 +1,6 @@
 package com.taxes.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,11 +13,14 @@ public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToOne
     private Customer customer;
-    @ToString.Exclude
     @OneToOne
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Employee employee;
     @Column(nullable = false)
     private LocalDateTime created;

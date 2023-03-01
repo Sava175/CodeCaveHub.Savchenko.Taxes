@@ -37,18 +37,21 @@ public class TaxesApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+                Faker faker = new Faker();
 
 
-        Faker faker = new Faker();
+
+
+
         List<Person> people = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             Person person = new Person();
             person.setFirstName(faker.name().firstName());
             person.setLastName(faker.name().lastName());
             person.setAddress(faker.address().fullAddress());
             person.setPhone(faker.phoneNumber().cellPhone());
-            person.setCreated(LocalDateTime.now());
-            person.setUpdated(LocalDateTime.now());
+            person.setCreated(LocalDateTime.now().plusDays(i));
+            person.setUpdated(LocalDateTime.now().plusDays(i));
             person.setSex(faker.options().option('M', 'F'));
             person.setDob(faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
             person.setCategory(Person.Category.values()[faker.random().nextInt(Person.Category.values().length)]);
@@ -57,25 +60,25 @@ public class TaxesApplication implements CommandLineRunner {
         personRepo.saveAll(people);
 
         List<User> users = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             User user = new User();
             user.setEmail(faker.internet().emailAddress());
             user.setStatus(User.Status.values()[faker.random().nextInt(User.Status.values().length)]);
             user.setPassword(faker.internet().password());
-            user.setCreated(LocalDateTime.now());
-            user.setUpdated(LocalDateTime.now());
+            user.setCreated(LocalDateTime.now().plusDays(i));
+            user.setUpdated(LocalDateTime.now().plusDays(i));
             users.add(user);
         }
         userRepo.saveAll(users);
 
 
         List<Customer> customers = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             Customer customer = new Customer();
             customer.setPerson(people.get(i));
             customer.setStatus(Customer.Status.values()[faker.random().nextInt(Customer.Status.values().length)]);
-            customer.setCreated(LocalDateTime.now());
-            customer.setUpdated(LocalDateTime.now());
+            customer.setCreated(LocalDateTime.now().plusDays(i));
+            customer.setUpdated(LocalDateTime.now().plusDays(i));
             customer.setUser(users.get(i));
 
             customers.add(customer);
@@ -84,81 +87,148 @@ public class TaxesApplication implements CommandLineRunner {
 
 
         List<Employee> employees = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             Employee employee = new Employee();
-            employee.setPerson(people.get(i + 5));
+            employee.setPerson(people.get(i + 10));
             employee.setPosition(Employee.Position.values()[faker.random().nextInt(Employee.Position.values().length)]);
-            employee.setCreated(LocalDateTime.now());
-            employee.setUpdated(LocalDateTime.now());
+            employee.setCreated(LocalDateTime.now().plusDays(i));
+            employee.setUpdated(LocalDateTime.now().plusDays(i));
             employees.add(employee);
         }
         employeeRepo.saveAll(employees);
 
 
         List<Report> reports = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             Report report = new Report();
             report.setCustomer(customers.get(i));
+
             report.setEmployee(employees.get(i));
             report.setPeriod(Report.Period.values()[faker.random().nextInt(Report.Period.values().length)]);
-            report.setCreated(LocalDateTime.now());
-            report.setUpdated(LocalDateTime.now());
+            report.setCreated(LocalDateTime.now().plusDays(i));
+            report.setUpdated(LocalDateTime.now().plusDays(i));
+            reports.add(report);
+        }
+        for (int i = 0; i < 10; i++) {
+            Report report = new Report();
+            report.setCustomer(customers.get(i));
+            customers.get(i).getReports().add(report);
+            report.setEmployee(employees.get(i));
+            report.setPeriod(Report.Period.values()[faker.random().nextInt(Report.Period.values().length)]);
+            report.setCreated(LocalDateTime.now().plusDays(i+1));
+            report.setUpdated(LocalDateTime.now().plusDays(i+2));
             reports.add(report);
         }
         reportRepo.saveAll(reports);
 
         List<Request> requests = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
+            Request request = new Request();
+            request.setCustomer(customers.get(i));
+            customers.get(i).getRequests().add(request);
+            request.setEmployee(employees.get(i));
+            request.setCreated(LocalDateTime.now().plusDays(i));
+            request.setUpdated(LocalDateTime.now().plusDays(i));
+            request.setDescription(faker.lorem().sentence());
+            request.setStatus(Request.State.values()[faker.random().nextInt(Request.State.values().length)]);
+            requests.add(request);
+        }
+        for (int i = 0; i < 10; i++) {
             Request request = new Request();
             request.setCustomer(customers.get(i));
             request.setEmployee(employees.get(i));
-            request.setCreated(LocalDateTime.now());
-            request.setUpdated(LocalDateTime.now());
+            request.setCreated(LocalDateTime.now().plusDays(i+1));
+            request.setUpdated(LocalDateTime.now().plusDays(i+2));
             request.setDescription(faker.lorem().sentence());
             request.setStatus(Request.State.values()[faker.random().nextInt(Request.State.values().length)]);
             requests.add(request);
         }
         requestRepo.saveAll(requests);
 
+        customerRepo.saveAll(customers);
 
-        LocalDate created = LocalDate.of(2023, 02, 25);
-        LocalDateTime inMethod = created.atStartOfDay();
-        List<Report> reportList = reportRepo.findAllByCreated(inMethod);
-        for (Report report : reportList) {
+
+
+
+
+        List<Report> list = customerRepo.findAllLastReportsOfCustomer();
+        for (Report report: list){
             System.out.println(report);
         }
 
 
-        LocalDate updated = LocalDate.of(2023, 02, 25);
-        LocalDateTime localDateTime = updated.atStartOfDay();
-        List<Report> reports1 = reportRepo.findAllByUpdated(localDateTime);
-        for (Report report : reports1) {
-            System.out.println(report);
-        }
 
 
-        LocalDate localDate = LocalDate.of(2023, 02, 24);
-        LocalDateTime localDateTime1 = localDate.atTime(LocalTime.MAX);
-        List<Report> some = reportRepo.findAllByCreatedGreaterThan(localDateTime1);
-        for (Report report : some) {
-            System.out.println(report);
-        }
 
 
-        LocalDate iNeed = LocalDate.of(2023, 02, 25);
-        LocalDateTime from = iNeed.atStartOfDay();
-        LocalDateTime to = iNeed.atTime(LocalTime.MAX);
-        List<Report> again = reportRepo.findAllByCreatedBetween(from, to);
-        for (Report report : again) {
-            System.out.println(report);
-        }
 
 
-        List<Report> reportList1 = reportRepo.findAllByCreatedBetweenAndCustomer_Id(LocalDateTime.of(2023, 02, 25, 01, 10), LocalDateTime.of(2023, 02, 25, 23, 59), 2L);
-        for (Report report : reportList1) {
-            System.out.println(report);
-        }
 
 
+
+
+
+
+//        List<Report> byLastName =  reportRepo.findReportsByEmployee_Person_LastNameStartsWith("S");
+//        for (Report report: byLastName){
+//            System.out.println(report);
+//        }
+//
+//
+//
+//
+//        List<Report> first = reportRepo.findAllByCreatedBetweenAndUpdatedBefore(LocalDateTime.now(), LocalDateTime.now().plusDays(6), LocalDateTime.now().plusDays(3));
+//        for(Report report: first){
+//            System.out.println(report);
+//        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        LocalDate created = LocalDate.of(2023, 02, 25);
+//        LocalDateTime inMethod = created.atStartOfDay();
+//        List<Report> reportList = reportRepo.findAllByCreated(inMethod);
+//        for (Report report : reportList) {
+//            System.out.println(report);
+//        }
+//
+//
+//        LocalDate updated = LocalDate.of(2023, 02, 25);
+//        LocalDateTime localDateTime = updated.atStartOfDay();
+//        List<Report> reports1 = reportRepo.findAllByUpdated(localDateTime);
+//        for (Report report : reports1) {
+//            System.out.println(report);
+//        }
+//
+//
+//        LocalDate localDate = LocalDate.of(2023, 02, 24);
+//        LocalDateTime localDateTime1 = localDate.atTime(LocalTime.MAX);
+//        List<Report> some = reportRepo.findAllByCreatedGreaterThan(localDateTime1);
+//        for (Report report : some) {
+//            System.out.println(report);
+//        }
+//
+//
+//        LocalDate iNeed = LocalDate.of(2023, 02, 25);
+//        LocalDateTime from = iNeed.atStartOfDay();
+//        LocalDateTime to = iNeed.atTime(LocalTime.MAX);
+//        List<Report> again = reportRepo.findAllByCreatedBetween(from, to);
+//        for (Report report : again) {
+//            System.out.println(report);
+//        }
     }
 }
+
+
+
+
+

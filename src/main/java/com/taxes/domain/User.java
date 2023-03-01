@@ -1,8 +1,6 @@
 package com.taxes.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,7 +12,15 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(length = 30,unique = true)
+    @OneToOne
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Employee employee;
+    @OneToOne
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Customer customer;
+    @Column(length = 100,unique = true)
     private String email;
     @Enumerated(EnumType.STRING)
     private Status status;

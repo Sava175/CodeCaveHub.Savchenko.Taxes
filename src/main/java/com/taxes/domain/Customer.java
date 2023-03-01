@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -19,8 +21,7 @@ public class Customer {
     @EqualsAndHashCode.Exclude
     @OneToOne
     private Person person;
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
+
     @OneToOne
     private User user;
     @Enumerated(EnumType.STRING)
@@ -29,11 +30,10 @@ public class Customer {
     private LocalDateTime created;
     @Column(nullable = false)
     private LocalDateTime updated;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Report>reports = new ArrayList<>();
     @OneToMany
-    @ToString.Exclude
-    private List<Report>reports;
-    @OneToMany
-    @ToString.Exclude
-    private Set<Request> requests;
+    private Set<Request> requests = new HashSet<>();
     public enum Status {INDIVIDUAL, COMPANY}
 }

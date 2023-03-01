@@ -1,9 +1,6 @@
 package com.taxes.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,9 +14,11 @@ public class Report {
     private Long id;
     @OneToOne
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Customer customer;
     @OneToOne
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Employee employee;
     @Enumerated(EnumType.STRING)
     private Period period;
