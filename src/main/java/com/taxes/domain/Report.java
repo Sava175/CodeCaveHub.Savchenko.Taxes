@@ -23,7 +23,6 @@ public class Report {
     @Enumerated(EnumType.STRING)
     private Period period;
     @Column(nullable = false)
-
     private LocalDateTime created;
     @Column(nullable = false)
     private LocalDateTime updated;

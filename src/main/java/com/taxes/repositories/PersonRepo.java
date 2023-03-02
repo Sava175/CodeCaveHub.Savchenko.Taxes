@@ -2,8 +2,6 @@ package com.taxes.repositories;
 
 import com.taxes.domain.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,17 +19,4 @@ public interface PersonRepo extends JpaRepository<Person, Long> {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-//    @Query(value = "SELECT * FROM person WHERE firstName = :firstName AND lastName = :lastName", nativeQuery = true)
-//    Person findPersonBySecondNameAndFirstName(@Param("firstName") String firstName, @Param("secondName") String secondName);
 

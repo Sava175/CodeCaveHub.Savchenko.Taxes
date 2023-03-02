@@ -14,9 +14,9 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToOne
     private Customer customer;
     @OneToOne
     @ToString.Exclude

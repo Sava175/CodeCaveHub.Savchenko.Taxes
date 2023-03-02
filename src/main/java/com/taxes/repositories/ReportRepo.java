@@ -4,11 +4,9 @@ import com.taxes.domain.Employee;
 import com.taxes.domain.Person;
 import com.taxes.domain.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+
 
 public interface ReportRepo extends JpaRepository<Report, Long> {
 
@@ -17,8 +15,24 @@ public interface ReportRepo extends JpaRepository<Report, Long> {
     List<Report> findAllByCreatedGreaterThan(LocalDateTime localDateTime);
     List<Report> findAllByCreatedBetween(LocalDateTime after, LocalDateTime before);
     List<Report> findAllByCreatedBetweenAndCustomer_Id(LocalDateTime from, LocalDateTime to, Long id);
-    List<Report> findAllByCreatedBetweenAndUpdatedBefore(LocalDateTime from, LocalDateTime to, LocalDateTime up);
-    List<Report> findReportsByEmployee_Person_LastNameStartsWith(String letter);
+    List<Report> findAllByCreatedBetweenAndUpdatedBefore(LocalDateTime from, LocalDateTime to, LocalDateTime up);//1
+    List<Report> findReportsByEmployee_Person_LastNameStartsWith(String letter); //2
+    List<Report> findAllByPeriodAndUpdatedBefore(Report.Period period, LocalDateTime localDateTime);
+
+    List <Report> findAllByPeriodOrderByUpdatedDesc(Report.Period period);//6
+    List<Report> findAllByUpdatedAfterAndCustomer_User_EmailContaining(LocalDateTime updated, String email);//5
+
+    List<Report> findAllByCreatedAndUpdatedOrderByCustomer_Person_LastNameAsc(LocalDateTime first, LocalDateTime second);//10
+    List<Report> findAllByCreatedBetweenOrderByUpdatedDesc(LocalDateTime first, LocalDateTime second); //7
+    //Get the reports that were created during a specific quarter and ordered by the number of updates.
+
+    //Get the reports that were created and updated during the same day and ordered by the customer's name.
+
+
+
+
+
+
 
 
 

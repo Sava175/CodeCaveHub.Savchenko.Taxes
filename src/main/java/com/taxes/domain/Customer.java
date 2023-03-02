@@ -25,15 +25,19 @@ public class Customer {
     @OneToOne
     private User user;
     @Enumerated(EnumType.STRING)
-    private Status status; // find by status
+    private Status status;
     @Column(nullable = false)
     private LocalDateTime created;
     @Column(nullable = false)
     private LocalDateTime updated;
 
+
     @OneToMany(fetch = FetchType.EAGER)
     private List<Report>reports = new ArrayList<>();
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Request> requests = new HashSet<>();
+
+
+
     public enum Status {INDIVIDUAL, COMPANY}
 }

@@ -102,8 +102,9 @@ public class TaxesApplication implements CommandLineRunner {
         for (int i = 0; i < 10; i++) {
             Report report = new Report();
             report.setCustomer(customers.get(i));
-
+            customers.get(i).getReports().add(report);
             report.setEmployee(employees.get(i));
+            employees.get(i).getReports().add(report);
             report.setPeriod(Report.Period.values()[faker.random().nextInt(Report.Period.values().length)]);
             report.setCreated(LocalDateTime.now().plusDays(i));
             report.setUpdated(LocalDateTime.now().plusDays(i));
@@ -111,120 +112,115 @@ public class TaxesApplication implements CommandLineRunner {
         }
         for (int i = 0; i < 10; i++) {
             Report report = new Report();
-            report.setCustomer(customers.get(i));
-            customers.get(i).getReports().add(report);
+
+
+            report.setCustomer(customers.get(4));
+            customers.get(4).getReports().add(report);
             report.setEmployee(employees.get(i));
+            employees.get(4).getReports().add(report);
+
+
             report.setPeriod(Report.Period.values()[faker.random().nextInt(Report.Period.values().length)]);
             report.setCreated(LocalDateTime.now().plusDays(i+1));
             report.setUpdated(LocalDateTime.now().plusDays(i+2));
             reports.add(report);
         }
         reportRepo.saveAll(reports);
-
-        List<Request> requests = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Request request = new Request();
-            request.setCustomer(customers.get(i));
-            customers.get(i).getRequests().add(request);
-            request.setEmployee(employees.get(i));
-            request.setCreated(LocalDateTime.now().plusDays(i));
-            request.setUpdated(LocalDateTime.now().plusDays(i));
-            request.setDescription(faker.lorem().sentence());
-            request.setStatus(Request.State.values()[faker.random().nextInt(Request.State.values().length)]);
-            requests.add(request);
-        }
-        for (int i = 0; i < 10; i++) {
-            Request request = new Request();
-            request.setCustomer(customers.get(i));
-            request.setEmployee(employees.get(i));
-            request.setCreated(LocalDateTime.now().plusDays(i+1));
-            request.setUpdated(LocalDateTime.now().plusDays(i+2));
-            request.setDescription(faker.lorem().sentence());
-            request.setStatus(Request.State.values()[faker.random().nextInt(Request.State.values().length)]);
-            requests.add(request);
-        }
-        requestRepo.saveAll(requests);
-
         customerRepo.saveAll(customers);
+        employeeRepo.saveAll(employees);
 
 
 
+
+
+
+        List<Customer> mostReports = customerRepo.findCustomersWithMostReports();
+        for (Customer some: mostReports){
+            System.out.println("Customer with id " + some.getId() + "has " + some.getReports().size() + "reports");
+        }
+        //  4
 
 
         List<Report> list = customerRepo.findAllLastReportsOfCustomer();
         for (Report report: list){
             System.out.println(report);
         }
+        //3
 
 
+        List<Report> byLastName =  reportRepo.findReportsByEmployee_Person_LastNameStartsWith("S");
+        for (Report report: byLastName){
+            System.out.println(report);
+        }
+        //2
 
 
+        List<Report> first = reportRepo.findAllByCreatedBetweenAndUpdatedBefore(LocalDateTime.now(), LocalDateTime.now().plusDays(6), LocalDateTime.now().plusDays(3));
+        for(Report report: first){
+            System.out.println(report);
+        }
+        //1
 
 
+        List<Report> byEmail = reportRepo.findAllByUpdatedAfterAndCustomer_User_EmailContaining(LocalDateTime.now().minusDays(2), "sa");
+        for (Report report: byEmail){
+            System.out.println(report);
+        }
+        //5
 
 
+        List<Report> byPeriodAndDesc = reportRepo.findAllByPeriodOrderByUpdatedDesc(Report.Period.MONTH);
+        for(Report report: byPeriodAndDesc){
+            System.out.println(report);
+        }
+        //6
 
 
+        List<Report> byCreatedUpdated = reportRepo.findAllByCreatedBetweenOrderByUpdatedDesc(LocalDateTime.now().minusDays(2), LocalDateTime.now().plusDays(2));
+        for (Report report: byCreatedUpdated){
+            System.out.println(report);
+        }
+        //7
 
 
+        List<Report> byOrderedBy = reportRepo.findAllByCreatedAndUpdatedOrderByCustomer_Person_LastNameAsc(LocalDateTime.now(), LocalDateTime.now());
+        for (Report report: byOrderedBy){
+            System.out.println(report);
+        }
+        //10
 
 
-//        List<Report> byLastName =  reportRepo.findReportsByEmployee_Person_LastNameStartsWith("S");
-//        for (Report report: byLastName){
-//            System.out.println(report);
-//        }
-//
-//
-//
-//
-//        List<Report> first = reportRepo.findAllByCreatedBetweenAndUpdatedBefore(LocalDateTime.now(), LocalDateTime.now().plusDays(6), LocalDateTime.now().plusDays(3));
-//        for(Report report: first){
-//            System.out.println(report);
-//        }
+        LocalDate created = LocalDate.of(2023, 02, 25);
+        LocalDateTime inMethod = created.atStartOfDay();
+        List<Report> reportList = reportRepo.findAllByCreated(inMethod);
+        for (Report report : reportList) {
+            System.out.println(report);
+        }
 
 
+        LocalDate updated = LocalDate.of(2023, 02, 25);
+        LocalDateTime localDateTime = updated.atStartOfDay();
+        List<Report> reports1 = reportRepo.findAllByUpdated(localDateTime);
+        for (Report report : reports1) {
+            System.out.println(report);
+        }
 
 
+        LocalDate localDate = LocalDate.of(2023, 02, 24);
+        LocalDateTime localDateTime1 = localDate.atTime(LocalTime.MAX);
+        List<Report> some = reportRepo.findAllByCreatedGreaterThan(localDateTime1);
+        for (Report report : some) {
+            System.out.println(report);
+        }
 
 
-
-
-
-
-
-
-
-//        LocalDate created = LocalDate.of(2023, 02, 25);
-//        LocalDateTime inMethod = created.atStartOfDay();
-//        List<Report> reportList = reportRepo.findAllByCreated(inMethod);
-//        for (Report report : reportList) {
-//            System.out.println(report);
-//        }
-//
-//
-//        LocalDate updated = LocalDate.of(2023, 02, 25);
-//        LocalDateTime localDateTime = updated.atStartOfDay();
-//        List<Report> reports1 = reportRepo.findAllByUpdated(localDateTime);
-//        for (Report report : reports1) {
-//            System.out.println(report);
-//        }
-//
-//
-//        LocalDate localDate = LocalDate.of(2023, 02, 24);
-//        LocalDateTime localDateTime1 = localDate.atTime(LocalTime.MAX);
-//        List<Report> some = reportRepo.findAllByCreatedGreaterThan(localDateTime1);
-//        for (Report report : some) {
-//            System.out.println(report);
-//        }
-//
-//
-//        LocalDate iNeed = LocalDate.of(2023, 02, 25);
-//        LocalDateTime from = iNeed.atStartOfDay();
-//        LocalDateTime to = iNeed.atTime(LocalTime.MAX);
-//        List<Report> again = reportRepo.findAllByCreatedBetween(from, to);
-//        for (Report report : again) {
-//            System.out.println(report);
-//        }
+        LocalDate iNeed = LocalDate.of(2023, 02, 25);
+        LocalDateTime from = iNeed.atStartOfDay();
+        LocalDateTime to = iNeed.atTime(LocalTime.MAX);
+        List<Report> again = reportRepo.findAllByCreatedBetween(from, to);
+        for (Report report : again) {
+            System.out.println(report);
+        }
     }
 }
 

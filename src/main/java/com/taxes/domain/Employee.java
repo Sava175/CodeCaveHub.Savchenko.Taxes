@@ -1,11 +1,11 @@
 package com.taxes.domain;
 
 import lombok.*;
-import lombok.ToString.Exclude;
+
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -25,10 +25,14 @@ public class Employee {
     private User user;
     @Enumerated(EnumType.STRING)
     private Position position;
-    @OneToMany
-    private List<Report>reports;
-    @OneToMany
-    private Set<Request> requests;
+
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Report>reports = new HashSet<>();
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Request> requests = new HashSet<>();
+
+
     @Column(nullable = false)
     private LocalDateTime created;
     @Column(nullable = false)
