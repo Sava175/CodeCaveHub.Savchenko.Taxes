@@ -24,9 +24,7 @@ public interface ReportRepo extends JpaRepository<Report, Long> {
 
     List<Report> findAllByCreatedAndUpdatedOrderByCustomer_Person_LastNameAsc(LocalDateTime first, LocalDateTime second);//10
     List<Report> findAllByCreatedBetweenOrderByUpdatedDesc(LocalDateTime first, LocalDateTime second); //7
-    //Get the reports that were created during a specific quarter and ordered by the number of updates.
 
-    //Get the reports that were created and updated during the same day and ordered by the customer's name.
 
 
 
